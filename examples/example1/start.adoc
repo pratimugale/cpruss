@@ -47,4 +47,4 @@ start
 Look quickly and you will see the `USR3` LED blinking.  
 
 === Note: 
-To execute the program using the second PRU (PRU2), change PRUN=0 to PRUN=1 
+To execute the program using the second PRU (PRU2), change PRUN=0 to PRUN=1 in source.sh
