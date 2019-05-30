@@ -1,5 +1,5 @@
 #!/bin/bash
-export PRUN=0
+export PRUN=1
 export TARGET=hello
 echo PRUN=$PRUN
 echo TARGET=$TARGET
