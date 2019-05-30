@@ -1,3 +1,3 @@
-# cpruss
+# pruss-api
 
-Test to init git on bbb
+An API to control the BBB PRUs thorugh multiple programming languages.
