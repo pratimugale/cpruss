@@ -9,6 +9,14 @@
 # PRU_CGT environment variable points to the TI PRU compiler directory.
 # PRU_SUPPORT points to pru-software-support-package.
 # GEN_DIR points to where to put the generated files.
+
+
+#Added by Pratim
+#PRUN=0
+#TARGET=hello
+
+#So that source.sh file can be ignored(increases complexity)
+
 PRU_CGT:=/usr/share/ti/cgt-pru
 PRU_SUPPORT:=/usr/lib/ti/pru-software-support-package
 GEN_DIR:=/tmp/pru$(PRUN)-gen
