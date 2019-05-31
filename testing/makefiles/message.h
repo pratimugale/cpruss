@@ -1,0 +1,2 @@
+void printabc();
+void printhello();
