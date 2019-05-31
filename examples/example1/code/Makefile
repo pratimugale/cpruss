@@ -42,15 +42,15 @@ endif
 
 PRU_DIR=$(wildcard /sys/devices/platform/ocp/4a32600*.pruss-soc-bus/4a300000.pruss/$(PRU_ADDR).*/remoteproc/remoteproc*)
 
-all: stop install start
+#all: stop install start
 
-stop:
-	@echo "-    Stopping PRU $(PRUN)"
-	@echo stop | sudo tee $(PRU_DIR)/state || echo Cannot stop $(PRUN)
+#stop:
+#	@echo "-    Stopping PRU $(PRUN)"
+#	@echo stop | sudo tee $(PRU_DIR)/state || echo Cannot stop $(PRUN)
 
-start:
-	@echo "-    Starting PRU $(PRUN)"
-	@echo start | sudo tee $(PRU_DIR)/state
+#start:
+#	@echo "-    Starting PRU $(PRUN)"
+#	@echo start | sudo tee $(PRU_DIR)/state
 
 install: $(GEN_DIR)/$(TARGET).out
 	@echo '-	copying firmware file $(GEN_DIR)/$(TARGET).out to /lib/firmware/am335x-pru$(PRUN)-fw'
