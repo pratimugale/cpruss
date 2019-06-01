@@ -12,8 +12,8 @@
 
 
 #Added by Pratim
-#PRUN=0
-#TARGET=hello
+PRUN=0
+TARGET=hello
 
 #So that source.sh file can be ignored(increases complexity)
 
