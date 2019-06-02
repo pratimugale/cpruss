@@ -1,7 +1,11 @@
-# Documentation - pruss-api
+# Documentation
 
+## Installation
 - To install everything, run the `install.sh` file in `scripts` directory. 
 - Then log out and log in again to your device so that the changes are made. (as .bashrc is executed at the time of logging in).
+
+## Uninstall
+- Run the `uninstall.sh` script in `scripts` directory. (`$ source uninstall.sh`)
 
 ## Parts Installation 
 
