@@ -137,6 +137,7 @@ char* state(int n){
         FILE *file = fopen("/sys/devices/platform/ocp/4a326004.pruss-soc-bus/4a300000.pruss/4a334000.pru/remoteproc/remoteproc1/state", "r"); 
         if (file != NULL){
             fgets(status, sizeof status, file);
+            fclose(file);
             return status;
             //printf("Status of PRU 1: %s", status);
         }
@@ -145,6 +146,7 @@ char* state(int n){
         FILE *file = fopen("/sys/devices/platform/ocp/4a326004.pruss-soc-bus/4a300000.pruss/4a338000.pru/remoteproc/remoteproc2/state", "r"); 
         if (file != NULL){
             fgets(status, sizeof status, file);
+            fclose(file);
             return status;
             //printf("Status of PRU 2: %s", status);
         }
@@ -165,30 +167,54 @@ int check_module(){
     char buf[16];
     if (fread (buf, 1, sizeof (buf), file) > 0){ // If there is some result then module definitely must be loaded 
         printf("The pru_rproc module is loaded in the Linux Kernel.\n");
-        //fclose(file);
+        fclose(file);
         return 1;
     }
     else{
         printf("The pru_rproc module is NOT loaded.\n");
-        //fclose(file);
+        fclose(file);
         return 0;
     }
 }
 
 void modprobe(){
     //Procedure to add the "pru_rproc" module to the Linux Kernel
-    strcpy(command, "sudo modprobe pru_rproc");
-    system(command);
+    if (!check_module()){
+        strcpy(command, "sudo modprobe pru_rproc");
+        system(command);
+        printf("Module added.\n");
+    }
 }
 
 int rmmod(int n=0){
     //Procedure to remove the "pru_rproc" module from the Linux Kernel
-    //Parameters: 0 - NOT Forcibly
-    //            1 - Remove Forcibly i.e. stop the PRUs and then remove the module
-    if (n == 1){
-        stop(1);
-        stop(2);
-    }
+    //Parameters:     0 - NOT Forcibly i.e. module won't be removed if the PRUs are running
+    //                Any other value - Remove FORCIBLY i.e. stop the PRUs and then remove the module
+    //
+    //Return values : 0 - Couldn't be removed as the PRUs were running
+    //                1 - rmmod completed successfully
     strcpy(command, "sudo rmmod pru_rproc");
-    system(command);
+    if (check_module() && !strcmp(state(), "offline")){
+        system(command);
+        printf("Module Removed.\n");
+        return 1;
+    }
+    else if (check_module() && strcmp(state(), "offline")){
+        if(n == 1){
+            //forcibly
+            stop(1);
+            stop(2);
+            system(command);
+            printf("Module Removed.\n");
+            return 1;
+        }
+        else{
+            printf("Module couldn't be removed as the PRUs are currently running.\n");
+            return 0;
+        }
+    }
+    else if (!check_module()){
+        printf("Module is already removed.\n");
+        return 1;
+    }
 }
