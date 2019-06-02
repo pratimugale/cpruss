@@ -37,7 +37,7 @@ char status[8];
 }*/
 
 char command[150];
-int prun;
+int  prun;
 char status[8];
 
 void start(int n){
@@ -85,9 +85,10 @@ void start(int n){
         }
     }
     else{
-        printf("Invalid PRUn input in function start()");
+        printf("Invalid PRUn input in function start()\n");
     }
 }
+
 void stop(int n){
     //Procedure to Stop the PRU execuion(on whichever firmware is currently being executed)
 
@@ -110,9 +111,10 @@ void stop(int n){
         }
     }
     else{
-        printf("Invalid PRUn input in function stop()");
+        printf("Invalid PRUn input in function stop()\n");
     }
 }
+
 void restart(int n){
     //Procedure to stop the current execution and start again.(executes same firmware again)
     //For all practical purposes, restart() is better to use than start()
@@ -121,9 +123,10 @@ void restart(int n){
         start(n);
     }
     else{
-        printf("Invalid PRUn input provided in function restart()");
+        printf("Invalid PRUn input provided in function restart()\n");
     }
 }
+
 char* state(int n){
     //Returns (as a string), the current state of the PRU
 
@@ -146,9 +149,46 @@ char* state(int n){
             //printf("Status of PRU 2: %s", status);
         }
         else{
-             printf("Invalid PRUn input in function state()");
+             printf("Invalid PRUn input in function state()\n");
         }
 
     }
 
+}
+
+int check_module(){
+    //Function to check if the "pru_rproc" module is loaded into the kernel.
+    //Function returns 0 if module is NOT loaded and
+    //                 1 if it IS loaded.
+    FILE *file = popen("lsmod | grep pru_rproc", "r");
+
+    char buf[16];
+    if (fread (buf, 1, sizeof (buf), file) > 0){ // If there is some result then module definitely must be loaded 
+        printf("The pru_rproc module is loaded in the Linux Kernel.\n");
+        //fclose(file);
+        return 1;
+    }
+    else{
+        printf("The pru_rproc module is NOT loaded.\n");
+        //fclose(file);
+        return 0;
+    }
+}
+
+void modprobe(){
+    //Procedure to add the "pru_rproc" module to the Linux Kernel
+    strcpy(command, "sudo modprobe pru_rproc");
+    system(command);
+}
+
+int rmmod(int n=0){
+    //Procedure to remove the "pru_rproc" module from the Linux Kernel
+    //Parameters: 0 - NOT Forcibly
+    //            1 - Remove Forcibly i.e. stop the PRUs and then remove the module
+    if (n == 1){
+        stop(1);
+        stop(2);
+    }
+    strcpy(command, "sudo rmmod pru_rproc");
+    system(command);
 }

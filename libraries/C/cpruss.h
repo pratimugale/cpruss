@@ -7,6 +7,9 @@ void start(int n);
 void stop(int n);
 void restart(int n);
 char* state(int n);
+int check_module();
+void modprobe();
+int rmmod(int n);
 
 // Global Variables
 /*char command[150];
