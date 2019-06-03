@@ -14,7 +14,7 @@ int main(void){
     
     int x = check_module();
     printf("Value: %i\n", x);
-    start(1);
+    rmmod(0);
 
     printf("Completed execution!\n");
 

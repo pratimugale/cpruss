@@ -2,6 +2,8 @@
 
 int main(){
 
-    restart(1);
+    start(1);
+    char hi[60] = "~/work/pruss-api/examples/example1/code/";
+    make(hi);
     return 0;
 }

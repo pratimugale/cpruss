@@ -10,6 +10,7 @@ char* state(int n);
 int check_module();
 void modprobe();
 int rmmod(int n);
+void make(char *path);
 
 // Global Variables
 /*char command[150];

@@ -188,18 +188,18 @@ void modprobe(){
 
 int rmmod(int n=0){
     //Procedure to remove the "pru_rproc" module from the Linux Kernel
-    //Parameters:     0 - NOT Forcibly i.e. module won't be removed if the PRUs are running
+    //Parameters:     0 - NOT Forcibly i.e. module won't be removed if any PRU is running
     //                Any other value - Remove FORCIBLY i.e. stop the PRUs and then remove the module
     //
     //Return values : 0 - Couldn't be removed as the PRUs were running
     //                1 - rmmod completed successfully
     strcpy(command, "sudo rmmod pru_rproc");
-    if (check_module() && !strcmp(state(), "offline")){
+    if (check_module() && (!strcmp(state(1), "offline") && !strcmp(state(2), "offline"))){
         system(command);
         printf("Module Removed.\n");
         return 1;
     }
-    else if (check_module() && strcmp(state(), "offline")){
+    else if (check_module() && (strcmp(state(1), "offline") || strcmp(state(2), "offline"))){
         if(n == 1){
             //forcibly
             stop(1);
@@ -217,4 +217,21 @@ int rmmod(int n=0){
         printf("Module is already removed.\n");
         return 1;
     }
+}
+
+void make(char *path){
+    //Procedure that runs the "make" command on the Makefile whose location is specified in the argument 
+    //Always give the absolute path to be sure
+    //*******************
+    //DO NOT PASS THE ARGUMENT AS A STRING CONSTANT ELSE A WARNING WILL BE THROWN
+    //INSTEAD DO THIS(in your calling program):
+    //char path[7] = "~/path";
+    //make(path);
+    printf("Makefile Path: %s\n", path);
+    char temp[150] = "cd ";
+    strcat(temp, path);
+    char mak[9] = " && make";
+    strcat(temp, mak);
+    strcpy(command, temp);
+    system(command);
 }
