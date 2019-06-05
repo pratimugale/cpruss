@@ -3,7 +3,7 @@
 int main(){
 
     start(1);
-    char hi[60] = "~/work/pruss-api/examples/example1/code/";
-    make(hi);
+    char temp[48] = "/tmp/pru0-gen/hello.out";
+    load_firmware(temp, 0);
     return 0;
 }

@@ -227,11 +227,38 @@ void make(char *path){
     //INSTEAD DO THIS(in your calling program):
     //char path[7] = "~/path";
     //make(path);
-    printf("Makefile Path: %s\n", path);
+    printf("Makefile Path given: %s\n", path);
     char temp[150] = "cd ";
     strcat(temp, path);
     char mak[9] = " && make";
     strcat(temp, mak);
     strcpy(command, temp);
     system(command);
+}
+
+// Complete this function
+void load_firmware(char *path, int prun){
+    //This function loads the PRUs with the firmware provided in its argument
+    //Also mention the .out firmware in the path
+    //
+    //NOTE: Here 0 => PRU 1
+    //           1 => PRU 2
+    if (prun == 0 || prun == 1){
+        printf("Firmware Path given: %s\n", path);
+        char temp[150] = "sudo cp ";
+        strcat(temp, path);
+        char mak[50] = " /lib/firmware/am335x-pru";
+        strcat(temp, mak);
+        char pru[2];
+        sprintf(pru, "%i", prun);
+        strcat(temp, pru);
+        char mak2[4] = "-fw";
+        strcat(temp, mak2);
+        strcpy(command, temp);
+        printf("Executing: %s\n", command);
+        system(command);
+    }
+    else {
+        printf("Enter Valid PRU Number.");
+    }
 }

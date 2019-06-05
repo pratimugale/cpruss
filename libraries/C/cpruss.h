@@ -11,6 +11,7 @@ int check_module();
 void modprobe();
 int rmmod(int n);
 void make(char *path);
+void load_firmware(char *path, int n);
 
 // Global Variables
 /*char command[150];
