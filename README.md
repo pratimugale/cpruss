@@ -8,7 +8,7 @@ Project Link: https://summerofcode.withgoogle.com/projects/#5163407328673792
 ## Table 
 
 Column 1 | Column 2
---------   --------
+-------- |  --------
 Row 1C1  | Row2C2
 Row 2C1  | Row2C2
 
