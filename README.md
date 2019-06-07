@@ -1,9 +1,9 @@
 # pruss-api
 
-Description: A User Space API to control the BBB PRUs thorugh multiple programming languages.<br>
+Description: A User Space API to control the BBB PRUs through multiple programming languages.<br>
 
-Introductory Youtube Video: https://www.youtube.com/watch?v=3Z2PxDIoCpE&t=2s
-Project Link: https://summerofcode.withgoogle.com/projects/#5163407328673792
+Introductory Youtube Video: https://www.youtube.com/watch?v=3Z2PxDIoCpE&t=2s<br>
+Project Link: https://summerofcode.withgoogle.com/projects/#5163407328673792<br>
 
 ## Table 
 
@@ -13,7 +13,6 @@ Row 1C1  | Row2C2
 Row 2C1  | Row2C2
 
 ## Installation
-
 
 ## Usage 
 
