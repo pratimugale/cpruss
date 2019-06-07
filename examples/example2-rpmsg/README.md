@@ -4,16 +4,20 @@ This example is based on the `lab-5` of the `pru-software-support-package`.<br>
 Code Repository: http://git.ti.com/pru-software-support-package/pru-software-support-package/trees/master<br>
 Also explained on: http://processors.wiki.ti.com/index.php/PRU_Training:_Hands-on_Labs (But using CCS - Code Composer Studio)<br>
 
-To run the starter RPMsg example, follow the following steps:<br>
-
-Few points: 
+Few Points: 
 * My Kernel: 4.14.71-ti-r80 (use `$ uname -r` to find out kernel version)
 * Debian Version: BeagleBoard.org Debian Image 2018-10-07 (use `$ cat /etc/issue` to find)
 
+To run the starter RPMsg example, follow the following steps:<br> 
+
 1. Clone the repo from TI's website: http://git.ti.com/pru-software-support-package/pru-software-support-package/trees/master
+
 2. `$ cd pru-software-support-package/labs/lab_5/solution/am335x/PRU_RPMsg_Echo_Interrupt1`.
+
 3. Set the PRU_CGT variable `$ export PRU_CGT = /usr/share/ti/cgt-pru`
+
 4. Run `make` and `sudo copy` the generated .out file to `/lib/firmware/am335x-pru1-fw`. We will be using the 2nd PRU in this example.(Would have used `am335x-pru0-fw` for 1st PRU).
+
 5. Make sure that the RPMsg Modules are loaded into the kernel i.e.: <br>
    * `$ sudo modprobe pru_rproc`
    * `$ sudo modprobe rpmsg_pru`
@@ -27,12 +31,17 @@ Few points:
    * `pruss`
    * `pruss_intc`
    These can easily be found using `$ lsmod | grep pru` & `$ lsmod | grep rpmsg`.<br>
+   
 6. cd into `/sys/class/remoteproc`<br>
    `ls`: remoteproc1: for PRU1, remoteproc2: for PRU2<br> _The entry `remoteproc0` relates to the Wakeup M3 (CM3) remoteproc driver that helps with low power tasks on the Cortex M3 co-processor in the AM33xx family of devices-**it has no role in controlling the PRU-ICSS**._
 7. cd into `remoteproc2`.
+
 8. `$ echo amm335x-pru1-fw | sudo tee firmware` - to load the firmware. In earlier versions, this process was different.
+
 9. `$ echo start | sudo tee state` - to start the second PRU on which we are working on.
-10. `$ dmesg` or `$ dmesg | grep pru` - The last few lines of dmesg should be something like this: <br> 
+
+10. `$ dmesg` or `$ dmesg | grep pru` - The last few lines of dmesg should be something like this: <br>
+
 [   76.778231] pruss 4a300000.pruss: creating PRU cores and other child platform devices<br>
 [   76.811666] remoteproc remoteproc1: 4a334000.pru is available<br>
 [   76.811792] pru-rproc 4a334000.pru: PRU rproc node /ocp/pruss_soc_bus@4a326004/pruss@0/pru@34000 probed successfully<br>
@@ -49,6 +58,6 @@ Few points:
 [ 2035.385605] remoteproc remoteproc2: remote processor 4a338000.pru is now up<br>
 
 
-##Sources:
+## Sources:
 * Derek Molly's Exploring BeagleBone<br>
 * https://groups.google.com/d/msg/beagleboard/4P9NdglojBo/qqizuGCZAQAJ
