@@ -22,7 +22,7 @@ To run the starter RPMsg example, follow the following steps:<br>
    * `$ sudo modprobe pru_rproc`
    * `$ sudo modprobe rpmsg_pru`
    * `$ sudo modprobe virtio_rpmsg_bus`<br>
-   `lsmod` should have the following entris now: <br>
+   `$ lsmod` should have the following entris now: <br>
    * `virtio_rpmsg_bus`
    * `rpmsg_pru`
    * `rpmsg_core`
@@ -40,7 +40,7 @@ To run the starter RPMsg example, follow the following steps:<br>
 
 9. `$ echo start | sudo tee state` - to start the second PRU on which we are working on.
 
-10. `$ dmesg` or `$ dmesg | grep pru` - The last few lines of dmesg should be something like this: <br>
+10. `$ dmesg` or `$ dmesg | grep pru` - The last few lines of dmesg should be something like this:
 
 [   76.778231] pruss 4a300000.pruss: creating PRU cores and other child platform devices<br>
 [   76.811666] remoteproc remoteproc1: 4a334000.pru is available<br>
@@ -59,5 +59,5 @@ To run the starter RPMsg example, follow the following steps:<br>
 
 
 ## Sources:
-* Derek Molly's Exploring BeagleBone<br>
+* Derek Molloy's Exploring BeagleBone<br>
 * https://groups.google.com/d/msg/beagleboard/4P9NdglojBo/qqizuGCZAQAJ
