@@ -36,7 +36,7 @@ To run the starter RPMsg example, follow the following steps:<br>
    * `pruss_intc`
    These can easily be found using `$ lsmod | grep pru` & `$ lsmod | grep rpmsg`.<br>
 
-5. Run `make` and `sudo copy` the generated .out file to `/lib/firmware/am335x-pru1-fw`. We will be using the 2nd PRU in this example.(Would have used `am335x-pru0-fw` for 1st PRU).
+5. Run `make` and `sudo copy` the generated .out file to `/lib/firmware/am335x-pru1-fw`. We will be using the 2nd PRU in this example.(Would have used `am335x-pru0-fw` for 1st PRU).<br>
    **"main.c", line 72: error #20: identifier "RPMSG_MESSAGE_SIZE" is undefined** - If you are getting this error, change the line (72 in this case) from `uint8_t payload[RPMSG_MESSAGE_SIZE];` to `uint8_t payload[50];`. 
    
 6. cd into `/sys/class/remoteproc`<br>
@@ -69,7 +69,7 @@ To run the starter RPMsg example, follow the following steps:<br>
 
 12. Compile the `rpmsg_pru_user_space_echo.c` file using GCC compiler (`$ g++ rpmsg_pru_user_space_echo.c`).<br>
 
-13. **`$ sudo ./a.out` MAKE SURE YOU ARE THE SUPERUSER WHILE EXECUTING ./A.OUT OTHERWISE YOU WILL GET `"Failed to open /dev/rpmsg31"` ERROR**
+13. **`$ sudo ./a.out` MAKE SURE YOU ARE THE SUPERUSER WHILE EXECUTING ./a.out OTHERWISE YOU WILL GET `"Failed to open /dev/rpmsg31"` ERROR**
 
 14. You sould be able to execute the file and get "Received 100 messages, closing /dev/rpmsg31" as output.
 
