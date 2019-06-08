@@ -158,35 +158,60 @@ char* state(int n){
 
 }
 
-int check_module(){
-    //Function to check if the "pru_rproc" module is loaded into the kernel.
-    //Function returns 0 if module is NOT loaded and
-    //                 1 if it IS loaded.
-    FILE *file = popen("lsmod | grep pru_rproc", "r");
+int check_module(char *module){
+    //Function to check if the "pru_rproc" or "rpmsg_pru" module is loaded into the kernel.
+    //Function returns 0 if module IS loaded and
+    //                 1 if pru_rproc is NOT loaded. (Needs to be loaded)
+    //                 2 if pru_rpmsg is NOT loaded. (Needs to be loaded)
+    //                 3 if wrong option is chosen.
 
-    char buf[16];
-    if (fread (buf, 1, sizeof (buf), file) > 0){ // If there is some result then module definitely must be loaded 
-        printf("The pru_rproc module is loaded in the Linux Kernel.\n");
-        fclose(file);
-        return 1;
+    char rproc[10] = "pru_rproc";
+    char rpmsg[10] = "rpmsg_pru";
+    if (!strcmp(module, rproc)){
+        //strcmp returns 0 if strings are same
+        
+        FILE *file = popen("lsmod | grep pru_rproc", "r");
+
+        char buf[16];
+        if (fread (buf, 1, sizeof (buf), file) > 0){ // If there is some result then module definitely must be loaded 
+            printf("The pru_rproc module is already loaded into the Linux Kernel.\n");
+            fclose(file);
+            return 0;
+        }
+        else{
+            printf("The pru_rproc module is NOT currently loaded.\n");
+            fclose(file);
+            return 1;
+        }
+    }
+    else if(!strcmp(module, rpmsg)){
+        FILE *file = popen("lsmod | grep rpmsg_pru", "r");
+        
+        char buf[16];
+        if (fread (buf, 1, sizeof (buf), file) > 0){ // If there is some result then module definitely must be loaded 
+            printf("The rpmsg_pru module is already loaded into the Linux Kernel.\n");
+            fclose(file);
+            return 0;
+        }
+        else{
+            printf("The rpmsg_pru module is NOT currently loaded.\n");
+            fclose(file);
+            return 2;
+        }
     }
     else{
-        printf("The pru_rproc module is NOT loaded.\n");
-        fclose(file);
-        return 0;
+        return 3;
     }
 }
 
 void modprobe(){
-    //Procedure to add the "pru_rproc" module to the Linux Kernel
-    if (!check_module()){
-        strcpy(command, "sudo modprobe pru_rproc");
-        system(command);
-        printf("Module added.\n");
-    }
+    //Procedure to add all the related remoterpoc modules to the Linux Kernel
+
+    modprobe_pru_rproc();
+    modprobe_rpmsg_pru();
 }
 
-int rmmod(int n=0){
+/*int rmmod(int n=0){
     //Procedure to remove the "pru_rproc" module from the Linux Kernel
     //Parameters:     0 - NOT Forcibly i.e. module won't be removed if any PRU is running
     //                Any other value - Remove FORCIBLY i.e. stop the PRUs and then remove the module
@@ -217,7 +242,7 @@ int rmmod(int n=0){
         printf("Module is already removed.\n");
         return 1;
     }
-}
+}*/
 
 void make(char *path){
     //Procedure that runs the "make" command on the Makefile whose location is specified in the argument 
@@ -236,7 +261,6 @@ void make(char *path){
     system(command);
 }
 
-// Complete this function
 void load_firmware(char *path, int prun){
     //This function loads the PRUs with the firmware provided in its argument
     //Also mention the .out firmware in the path
@@ -260,5 +284,30 @@ void load_firmware(char *path, int prun){
     }
     else {
         printf("Enter Valid PRU Number.");
+    }
+}
+
+void modprobe_pru_rproc(){
+    //Procedure to add the "pru_rproc" module to the Linux Kernel
+
+    char rproc[10] = "pru_rproc";
+    if (check_module(rproc) == 1){
+        strcpy(command, "sudo modprobe pru_rproc");
+        system(command);
+        printf("loaded 'pru_rproc' module in the kernel.\n");
+    }
+}
+
+void modprobe_rpmsg_pru(){
+    //Procedure to add the "rpmsg_pru" module to the Linux Kernel
+
+    char rpmsg[10] = "rpmsg_pru";
+    if (check_module(rpmsg) == 2){
+        strcpy(command, "sudo modprobe rpmsg_pru");
+        system(command);
+        printf("loaded 'rpmsg_pru' module in the kernel.\n");
+        strcpy(command, "sudo modprobe virtio_rpmsg_bus");
+        system(command);
+        printf("loaded 'virtio_rpmsg_bus' module in the kernel.\n");
     }
 }

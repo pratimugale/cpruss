@@ -2,8 +2,10 @@
 
 int main(){
 
-    start(1);
-    char temp[48] = "/tmp/pru0-gen/hello.out";
-    load_firmware(temp, 0);
+    //start(1);
+    //char temp[48] = "/tmp/pru0-gen/hello.out";
+    //load_firmware(temp, 0);
+    //
+    modprobe();
     return 0;
 }

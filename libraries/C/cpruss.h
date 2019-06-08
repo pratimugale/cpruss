@@ -7,11 +7,14 @@ void start(int n);
 void stop(int n);
 void restart(int n);
 char* state(int n);
-int check_module();
+int check_module(char *module);
 void modprobe();
 int rmmod(int n);
 void make(char *path);
 void load_firmware(char *path, int n);
+void modprobe_pru_rproc();
+void modprobe_rpmsg_pru();
+
 
 // Global Variables
 /*char command[150];
