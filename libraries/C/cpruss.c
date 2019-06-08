@@ -174,7 +174,7 @@ int check_module(char *module){
 
         char buf[16];
         if (fread (buf, 1, sizeof (buf), file) > 0){ // If there is some result then module definitely must be loaded 
-            printf("The pru_rproc module is already loaded into the Linux Kernel.\n");
+            printf("The pru_rproc module is currently loaded into the Linux Kernel.\n");
             fclose(file);
             return 0;
         }
@@ -189,7 +189,7 @@ int check_module(char *module){
         
         char buf[16];
         if (fread (buf, 1, sizeof (buf), file) > 0){ // If there is some result then module definitely must be loaded 
-            printf("The rpmsg_pru module is already loaded into the Linux Kernel.\n");
+            printf("The rpmsg_pru module is currently loaded into the Linux Kernel.\n");
             fclose(file);
             return 0;
         }
@@ -211,38 +211,16 @@ void modprobe(){
     modprobe_rpmsg_pru();
 }
 
-/*int rmmod(int n=0){
+int rmmod(int n=0){
     //Procedure to remove the "pru_rproc" module from the Linux Kernel
     //Parameters:     0 - NOT Forcibly i.e. module won't be removed if any PRU is running
     //                Any other value - Remove FORCIBLY i.e. stop the PRUs and then remove the module
     //
     //Return values : 0 - Couldn't be removed as the PRUs were running
     //                1 - rmmod completed successfully
-    strcpy(command, "sudo rmmod pru_rproc");
-    if (check_module() && (!strcmp(state(1), "offline") && !strcmp(state(2), "offline"))){
-        system(command);
-        printf("Module Removed.\n");
-        return 1;
-    }
-    else if (check_module() && (strcmp(state(1), "offline") || strcmp(state(2), "offline"))){
-        if(n == 1){
-            //forcibly
-            stop(1);
-            stop(2);
-            system(command);
-            printf("Module Removed.\n");
-            return 1;
-        }
-        else{
-            printf("Module couldn't be removed as the PRUs are currently running.\n");
-            return 0;
-        }
-    }
-    else if (!check_module()){
-        printf("Module is already removed.\n");
-        return 1;
-    }
-}*/
+    int x = rmmod_pru_rproc(n);
+    int y = rmmod_rpmsg_pru(n);
+}
 
 void make(char *path){
     //Procedure that runs the "make" command on the Makefile whose location is specified in the argument 
@@ -309,5 +287,81 @@ void modprobe_rpmsg_pru(){
         strcpy(command, "sudo modprobe virtio_rpmsg_bus");
         system(command);
         printf("loaded 'virtio_rpmsg_bus' module in the kernel.\n");
+    }
+}
+
+int rmmod_pru_rproc(int n=0){
+    //Procedure to remove the "pru_rproc" module from the Linux Kernel
+    //Parameters:     0 - NOT Forcibly i.e. module won't be removed if any PRU is running
+    //                Any other value - Remove FORCIBLY i.e. stop the PRUs and then remove the module
+    //
+    //Return values : 0 - Couldn't be removed as the PRUs were running
+    //                1 - rmmod completed successfully
+    strcpy(command, "sudo rmmod pru_rproc");
+    char rproc[10] = "pru_rproc";
+    if (!check_module(rproc) && (!strcmp(state(1), "offline") && !strcmp(state(2), "offline"))){
+        system(command);
+        printf("'pru_rproc' module removed.\n");
+        return 1;
+    }
+    else if (!check_module(rproc) && (strcmp(state(1), "offline") || strcmp(state(2), "offline"))){
+        if(n == 1){
+            //forcibly
+            stop(1);
+            stop(2);
+            system(command);
+            printf("'pru_rproc' module removed.\n");
+            return 1;
+        }
+        else{
+            printf("Module couldn't be removed as the PRUs are currently running.\n");
+            return 0;
+        }
+    }
+    else if (check_module(rproc) == 1){
+        printf("'pru_rproc' module is already removed.\n");
+        return 1;
+    }
+}
+
+int rmmod_rpmsg_pru(int n=0){
+    //Procedure to remove the "rpmsg_pru" module from the Linux Kernel
+    //Parameters: n = 0 - NOT Forcibly i.e. module won't be removed if any PRU is running
+    //                Any other value - Remove FORCIBLY i.e. stop the PRUs and then remove the module
+    //
+    //Return values : 0 - Couldn't be removed as the PRUs were running
+    //                1 - rmmod completed successfully
+    strcpy(command, "sudo rmmod rpmsg_pru");
+    char rpmsg[10] = "rpmsg_pru";
+    if (!check_module(rpmsg) && (!strcmp(state(1), "offline") && !strcmp(state(2), "offline"))){
+        system(command);
+        printf("'rpmsg_pru' module removed.\n");
+        strcpy(command, "sudo rmmod virtio_rpmsg_bus");
+        system(command);
+        printf("'virtio_rpmsg_bus' module removed.\n");
+        return 1;
+    }
+
+    else if (!check_module(rpmsg) && (strcmp(state(1), "offline") || strcmp(state(2), "offline"))){
+        if(n == 1){
+            //forcibly
+            printf("Debug 2");
+            stop(1);
+            stop(2);
+            system(command);
+            printf("'rpmsg_pru' module removed.\n");
+            strcpy(command, "sudo rmmod virtio_rpmsg_bus");
+            system(command);
+            printf("'virtio_rpmsg_bus' module removed.\n");
+            return 1;
+        }
+        else{
+            printf("Module couldn't be removed as the PRUs are currently running.\n");
+            return 0;
+        }
+    }
+    else if (check_module(rpmsg) == 2){
+        printf("'rpmsg_pru' module is already removed.\n");
+        return 1;
     }
 }
