@@ -350,8 +350,9 @@ int rmmod_rpmsg_pru(int n=0){
             stop(2);
             system(command);
             printf("'rpmsg_pru' module removed.\n");
-            strcpy(command, "sudo rmmod virtio_rpmsg_bus");
-            system(command);
+            char command2[150];
+            strcpy(command2, "sudo rmmod virtio_rpmsg_bus");
+            system(command2);
             printf("'virtio_rpmsg_bus' module removed.\n");
             return 1;
         }
