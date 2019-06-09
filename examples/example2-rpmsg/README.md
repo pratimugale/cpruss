@@ -1,5 +1,7 @@
 # PRU-RPMSG EXAMPLE
 
+## An Updated Guide is here - https://pratimugale.github.io/gsoc/2019/06/09/Blog1.html
+
 ## Objective 
 A basic demonstration of using RPMsg to communicate with the PRUs through the `/dev/rpmsg31` character device file. <br> The Userspace Program sends and receives 100 messages from the PRU. The PRU firmware creates the rpmsg31 file after it is compiled and loaded.
 
