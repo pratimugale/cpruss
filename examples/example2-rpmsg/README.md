@@ -1,5 +1,7 @@
 # PRU-RPMSG EXAMPLE
 
+## An Updated Guide is here - https://pratimugale.github.io/gsoc/2019/06/09/Blog1.html
+
 ## Objective 
 A basic demonstration of using RPMsg to communicate with the PRUs through the `/dev/rpmsg31` character device file. <br> The Userspace Program sends and receives 100 messages from the PRU. The PRU firmware creates the rpmsg31 file after it is compiled and loaded.
 
@@ -16,7 +18,8 @@ Few Points:
 
 To run the starter RPMsg example, follow the following steps:<br> 
 
-1. Clone the repo from TI's website: http://git.ti.com/pru-software-support-package/pru-software-support-package/trees/master
+1. Clone the repo from TI's website: http://git.ti.com/pru-software-support-package/pru-software-support-package/trees/master<br>
+   The same example is available in this directory also, but the Makefile has been a bit modified and the userpace.c program has been modified to use the API.<br>
 
 2. `$ cd pru-software-support-package/labs/lab_5/solution/am335x/PRU_RPMsg_Echo_Interrupt1`.
 
