@@ -31,59 +31,42 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-#include <stdio.h>
-#include <unistd.h>
-#include <fcntl.h>
-#include <string.h>
-//#include <sys/poll.h>
-#include "cpruss.h"
+/*
+ *  ======== resource_table_empty.h ========
+ *
+ *  Define the resource table entries for all PRU cores. This will be
+ *  incorporated into corresponding base images, and used by the remoteproc
+ *  on the host-side to allocated/reserve resources.  Note the remoteproc
+ *  driver requires that all PRU firmware be built with a resource table.
+ *
+ *  This file contains an empty resource table.  It can be used either as:
+ *
+ *        1) A template, or
+ *        2) As-is if a PRU application does not need to configure PRU_INTC
+ *                  or interact with the rpmsg driver
+ *
+ */
 
-#define MAX_BUFFER_SIZE		512
-char readBuf[MAX_BUFFER_SIZE];
+#ifndef _RSC_TABLE_PRU_H_
+#define _RSC_TABLE_PRU_H_
 
-#define NUM_MESSAGES		100
-//#define DEVICE_NAME		"/dev/rpmsg_pru31"
+#include <stddef.h>
+#include <rsc_types.h>
 
-int main(void)
-{
-        //int fd;
-	int i;
-	int result = 0;
+struct my_resource_table {
+	struct resource_table base;
 
-	/* Open the rpmsg_pru character device file */
-	//fd = open(DEVICE_NAME, O_RDWR);
+	uint32_t offset[1]; /* Should match 'num' in actual definition */
+};
 
-	/*
-	 * If the RPMsg channel doesn't exist yet the character device
-	 * won't either.
-	 * Make sure the PRU firmware is loaded and that the rpmsg_pru
-	 * module is inserted.
-	 */
-//	if (fd < 0) {
-//		printf("Failed to open %s\n", DEVICE_NAME);
-//		return -1;
-//	}
+#pragma DATA_SECTION(pru_remoteproc_ResourceTable, ".resource_table")
+#pragma RETAIN(pru_remoteproc_ResourceTable)
+struct my_resource_table pru_remoteproc_ResourceTable = {
+	1,	/* we're the first version that implements this */
+	0,	/* number of entries in the table */
+	0, 0,	/* reserved, must be zero */
+	0,	/* offset[0] */
+};
 
-	/* The RPMsg channel exists and the character device is opened */
-//	printf("Opened %s, sending %d messages\n\n", DEVICE_NAME, NUM_MESSAGES);
-
-	for (i = 0; i < NUM_MESSAGES; i++) {
-		/* Send 'hello world!' to the PRU through the RPMsg channel */
-		result = send_msg("pratim ugale", 1);
-		if (result > 0)
-			printf("Message %d: Sent to PRU\n", i);
-
-		/* Poll until we receive a message from the PRU and then print it */
-		char *message = get_msg(1);
-		printf("Message %d received from PRU:%s\n\n", i, message);
-	}
-
-	/* Received all the messages the example is complete */
-	printf("Received %d messages, closing\n", NUM_MESSAGES);
-
-	/* Close the rpmsg_pru character device file */
-//	close(fd);
-
-	return 0;
-}
+#endif /* _RSC_TABLE_PRU_H_ */
 

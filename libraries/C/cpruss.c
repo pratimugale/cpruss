@@ -2,6 +2,8 @@
 #include <iostream>
 #include <stdlib.h>
 #include <string.h>
+#include <unistd.h>
+#include <fcntl.h>
 
 #include "cpruss.h"
 
@@ -365,4 +367,74 @@ int rmmod_rpmsg_pru(int n=0){
         printf("'rpmsg_pru' module is already removed.\n");
         return 1;
     }
+}
+
+int send_msg(char *message, int n){
+    //Function to write a message to the given PRU channel
+    //      n = 0 => first PRU
+    //      n = 1 => second PRU
+    //      Return Values:
+    //       result > 0: Successful
+    //              < 0: Unsuccessful
+    //int MAX_BUFFER_SIZE = 512;
+    //char readBuf[MAX_BUFFER_SIZE];  
+    int fd;
+    int result = 0;
+    char DEVICE_NAME[20] = "/dev/rpmsg_pru";
+    if (n == 0){
+        char channel[3] = "30";
+        strcat(DEVICE_NAME, channel);
+    }
+    else if (n == 1){
+        char channel[3] = "31";
+        strcat(DEVICE_NAME, channel);
+    }
+    fd = open(DEVICE_NAME, O_RDWR);
+    /*
+     * If the RPMsg channel doesn't exist yet the character device
+     * won't either.
+     * Make sure the PRU firmware is loaded and that the rpmsg_pru
+     * module is inserted.
+     */
+    if (fd < 0) {
+    	printf("Failed to open %s\n", DEVICE_NAME);
+    	return -1;
+    }
+    /* The RPMsg channel exists and the character device is opened */
+    printf("Opened %s\n", DEVICE_NAME);
+
+    result = write(fd, message, 13);
+
+    return result;
+
+}
+
+char* get_msg(int n){
+
+    int MAX_BUFFER_SIZE = 512;
+    char readBuf[MAX_BUFFER_SIZE];  
+    int fd;
+    int result = 0;
+    char DEVICE_NAME[20] = "/dev/rpmsg_pru";
+    if (n == 0){
+        char channel[3] = "30";
+        strcat(DEVICE_NAME, channel);
+    }
+    else if (n == 1){
+        char channel[3] = "31";
+        strcat(DEVICE_NAME, channel);
+    }
+    fd = open(DEVICE_NAME, O_RDWR);
+    if (fd < 0) {
+    	printf("Failed to open %s\n", DEVICE_NAME);
+    	return "-1";
+    }
+    /* The RPMsg channel exists and the character device is opened */
+    printf("Opened %s\n", DEVICE_NAME);
+
+    result = read(fd, readBuf, MAX_BUFFER_SIZE);
+
+    return readBuf;
+
+    
 }

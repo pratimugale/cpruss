@@ -16,6 +16,8 @@ void modprobe_pru_rproc();
 void modprobe_rpmsg_pru();
 int rmmod_pru_rproc(int n);
 int rmmod_rpmsg_pru(int n);
+int send_msg(char *message, int n);
+char* get_msg(int n);
 
 
 // Global Variables
