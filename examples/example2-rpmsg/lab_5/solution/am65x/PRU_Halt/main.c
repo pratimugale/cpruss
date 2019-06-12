@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2015 Texas Instruments Incorporated - http://www.ti.com/
+ * Copyright (C) 2018 Texas Instruments Incorporated - http://www.ti.com/
  *
  *
  * Redistribution and use in source and binary forms, with or without
@@ -31,42 +31,11 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-#include <stdio.h>
-#include <unistd.h>
-#include <fcntl.h>
-#include <string.h>
-//#include <sys/poll.h>
-#include "cpruss.h"
+#include <stdint.h>
+#include "resource_table_empty.h"
 
-#define MAX_BUFFER_SIZE		512
-char readBuf[MAX_BUFFER_SIZE];
-
-#define NUM_MESSAGES		100
-//#define DEVICE_NAME		"/dev/rpmsg_pru31"
 
 int main(void)
 {
-	int i;
-	int result = 0;
-	/*
-	 * If the RPMsg channel doesn't exist yet the character device
-	 * won't either.
-	 * Make sure the PRU firmware is loaded and that the rpmsg_pru
-	 * module is inserted.
-	 */
-
-        //restart(1);
-	for (i = 0; i < NUM_MESSAGES; i++) {
-		/* Send 'pratim ugale' to the PRU through the RPMsg channel */
-		result = send_msg("pratim ugale", 1);
-                // result(message, prun)
-		if (result > 0)
-			printf("Message %d: Sent to PRU\n", i);
-
-		char *message = get_msg(1);
-                if (message != NULL)
-		    printf("Message %d received from PRU:%s\n\n", i, message);
-	}
-	return 0;
+	__halt();
 }
-

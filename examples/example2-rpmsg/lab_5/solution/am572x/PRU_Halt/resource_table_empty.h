@@ -31,42 +31,42 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-#include <stdio.h>
-#include <unistd.h>
-#include <fcntl.h>
-#include <string.h>
-//#include <sys/poll.h>
-#include "cpruss.h"
+/*
+ *  ======== resource_table_empty.h ========
+ *
+ *  Define the resource table entries for all PRU cores. This will be
+ *  incorporated into corresponding base images, and used by the remoteproc
+ *  on the host-side to allocated/reserve resources.  Note the remoteproc
+ *  driver requires that all PRU firmware be built with a resource table.
+ *
+ *  This file contains an empty resource table.  It can be used either as:
+ *
+ *        1) A template, or
+ *        2) As-is if a PRU application does not need to configure PRU_INTC
+ *                  or interact with the rpmsg driver
+ *
+ */
 
-#define MAX_BUFFER_SIZE		512
-char readBuf[MAX_BUFFER_SIZE];
+#ifndef _RSC_TABLE_PRU_H_
+#define _RSC_TABLE_PRU_H_
 
-#define NUM_MESSAGES		100
-//#define DEVICE_NAME		"/dev/rpmsg_pru31"
+#include <stddef.h>
+#include <rsc_types.h>
 
-int main(void)
-{
-	int i;
-	int result = 0;
-	/*
-	 * If the RPMsg channel doesn't exist yet the character device
-	 * won't either.
-	 * Make sure the PRU firmware is loaded and that the rpmsg_pru
-	 * module is inserted.
-	 */
+struct my_resource_table {
+	struct resource_table base;
 
-        //restart(1);
-	for (i = 0; i < NUM_MESSAGES; i++) {
-		/* Send 'pratim ugale' to the PRU through the RPMsg channel */
-		result = send_msg("pratim ugale", 1);
-                // result(message, prun)
-		if (result > 0)
-			printf("Message %d: Sent to PRU\n", i);
+	uint32_t offset[1]; /* Should match 'num' in actual definition */
+};
 
-		char *message = get_msg(1);
-                if (message != NULL)
-		    printf("Message %d received from PRU:%s\n\n", i, message);
-	}
-	return 0;
-}
+#pragma DATA_SECTION(pru_remoteproc_ResourceTable, ".resource_table")
+#pragma RETAIN(pru_remoteproc_ResourceTable)
+struct my_resource_table pru_remoteproc_ResourceTable = {
+	1,	/* we're the first version that implements this */
+	0,	/* number of entries in the table */
+	0, 0,	/* reserved, must be zero */
+	0,	/* offset[0] */
+};
+
+#endif /* _RSC_TABLE_PRU_H_ */
 

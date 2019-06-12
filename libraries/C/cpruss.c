@@ -2,6 +2,8 @@
 #include <iostream>
 #include <stdlib.h>
 #include <string.h>
+#include <unistd.h>
+#include <fcntl.h>
 
 #include "cpruss.h"
 
@@ -365,4 +367,112 @@ int rmmod_rpmsg_pru(int n=0){
         printf("'rpmsg_pru' module is already removed.\n");
         return 1;
     }
+}
+
+int send_msg(char *message, int n){
+    //Function to write a message to the given PRU channel
+    //      n = 0 => first PRU
+    //      n = 1 => second PRU
+    //      Return Values:
+    //       result > 0: Successful
+    //              < 0: Unsuccessful
+    //int MAX_BUFFER_SIZE = 512;
+    //char readBuf[MAX_BUFFER_SIZE];  
+    char device[] = "/dev/rpmsg_pru";
+    int result = 0;
+    if (n == 0){
+        char channel[] = "30";
+        int length = (strlen(device)+strlen(channel)+1);
+        char path[length] ;
+        path[0] = '\0';   // ensures the memory is an empty string
+        strcat(path,device);
+        strcat(path,channel);
+        //printf("The string is %s\n", path);
+        int fd = open(path, O_RDWR);
+        if (fd > 0){
+            //printf("fd = %i\n", fd);
+            printf("Opened the device, writing '%s'\n", message);
+            result = write(fd, message , 13);
+            //printf("Result: %i\n", result);
+        }
+        else{
+            printf("Failed to open /dev/rpmsg30; hence can't write to the file; ensure that pru0 has been probed\n");
+        }
+        close(fd);
+    }
+    else if (n == 1){
+        char channel[3] = "31";
+        int length = (strlen(device)+strlen(channel)+1);
+        char path[length] ;
+        path[0] = '\0';   // ensures the memory is an empty string
+        strcat(path,device);
+        strcat(path,channel);
+        //printf("The string is %s\n", path);
+        int fd = open(path, O_RDWR);
+        if (fd > 0){
+             //printf("fd = %i\n", fd);
+            printf("Opened the device, writing '%s'\n", message);
+            result = write(fd, message , 13);
+            //printf("Result: %i\n", result);
+        }
+        else {
+            printf("Failed to open /dev/rpmsg31; hence can't write to the file; ensure that pru0 has been probed\n");
+        }
+        close(fd);
+    }
+    /*
+     * If the RPMsg channel doesn't exist yet the character device
+     * won't either.
+     * Make sure the PRU firmware is loaded and that the rpmsg_pru
+     * module is inserted.
+     */
+    /* The RPMsg channel exists and the character device is opened */
+    return result;
+}
+
+char* get_msg(int n){
+
+    int MAX_BUFFER_SIZE = 512;
+    char* readBuf = new char[MAX_BUFFER_SIZE];  
+    int result = 0;
+    char device[] = "/dev/rpmsg_pru";
+    if (n == 0){
+        char channel[] = "30";
+        int length = (strlen(device)+strlen(channel)+1);
+        char path[length] ;
+        path[0] = '\0';   // ensures the memory is an empty string
+        strcat(path,device);
+        strcat(path,channel);
+        int fd = open(path, O_RDWR);
+        if (fd > 0){
+            int output = read(fd, readBuf, MAX_BUFFER_SIZE);
+            //printf("Output from PRUs: %s\n\n", readBuf);
+        }
+        else {
+            printf("Failed to open /dev/rpmsg30; hence can't read the file; ensure that pru0 has been probed\n");
+            return NULL;
+        }
+        close(fd);
+        return readBuf;
+    }
+    else if (n == 1){
+        char channel[3] = "31";
+        int length = (strlen(device)+strlen(channel)+1);
+        char path[length] ;
+        path[0] = '\0';   // ensures the memory is an empty string
+        strcat(path,device);
+        strcat(path,channel);
+        int fd = open(path, O_RDWR);
+        if (fd > 0){
+            int output = read(fd, readBuf, MAX_BUFFER_SIZE);
+            // printf("Output from PRUs: %s\n\n", readBuf);
+        }
+        else {
+            printf("Failed to open /dev/rpmsg31; hence can't read the file; ensure that pru1 has been probed\n");
+            return NULL;
+        }
+        close(fd);
+        return readBuf;
+    }
+    
 }
