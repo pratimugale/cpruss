@@ -54,6 +54,8 @@ int main(void)
 	 * Make sure the PRU firmware is loaded and that the rpmsg_pru
 	 * module is inserted.
 	 */
+
+        //restart(1);
 	for (i = 0; i < NUM_MESSAGES; i++) {
 		/* Send 'pratim ugale' to the PRU through the RPMsg channel */
 		result = send_msg("pratim ugale", 1);
@@ -62,7 +64,8 @@ int main(void)
 			printf("Message %d: Sent to PRU\n", i);
 
 		char *message = get_msg(1);
-		printf("Message %d received from PRU:%s\n\n", i, message);
+                if (message != NULL)
+		    printf("Message %d received from PRU:%s\n\n", i, message);
 	}
 	return 0;
 }

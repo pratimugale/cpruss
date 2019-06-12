@@ -389,10 +389,15 @@ int send_msg(char *message, int n){
         strcat(path,channel);
         //printf("The string is %s\n", path);
         int fd = open(path, O_RDWR);
-        //printf("fd = %i\n", fd);
-        printf("Opened the device, writing '%s'\n", message);
-        result = write(fd, message , 13);
-        printf("Result: %i\n", result);
+        if (fd > 0){
+            //printf("fd = %i\n", fd);
+            printf("Opened the device, writing '%s'\n", message);
+            result = write(fd, message , 13);
+            //printf("Result: %i\n", result);
+        }
+        else{
+            printf("Failed to open /dev/rpmsg30; hence can't write to the file; ensure that pru0 has been probed\n");
+        }
         close(fd);
     }
     else if (n == 1){
@@ -404,10 +409,15 @@ int send_msg(char *message, int n){
         strcat(path,channel);
         //printf("The string is %s\n", path);
         int fd = open(path, O_RDWR);
-        //printf("fd = %i\n", fd);
-        printf("Opened the device, writing '%s'\n", message);
-        result = write(fd, message , 13);
-        printf("Result: %i\n", result);
+        if (fd > 0){
+             //printf("fd = %i\n", fd);
+            printf("Opened the device, writing '%s'\n", message);
+            result = write(fd, message , 13);
+            //printf("Result: %i\n", result);
+        }
+        else {
+            printf("Failed to open /dev/rpmsg31; hence can't write to the file; ensure that pru0 has been probed\n");
+        }
         close(fd);
     }
     /*
@@ -434,8 +444,14 @@ char* get_msg(int n){
         strcat(path,device);
         strcat(path,channel);
         int fd = open(path, O_RDWR);
-        int output = read(fd, readBuf, MAX_BUFFER_SIZE);
-        //printf("Output from PRUs: %s\n\n", readBuf);
+        if (fd > 0){
+            int output = read(fd, readBuf, MAX_BUFFER_SIZE);
+            //printf("Output from PRUs: %s\n\n", readBuf);
+        }
+        else {
+            printf("Failed to open /dev/rpmsg30; hence can't read the file; ensure that pru0 has been probed\n");
+            return NULL;
+        }
         close(fd);
         return readBuf;
     }
@@ -447,8 +463,14 @@ char* get_msg(int n){
         strcat(path,device);
         strcat(path,channel);
         int fd = open(path, O_RDWR);
-        int output = read(fd, readBuf, MAX_BUFFER_SIZE);
-        // printf("Output from PRUs: %s\n\n", readBuf);
+        if (fd > 0){
+            int output = read(fd, readBuf, MAX_BUFFER_SIZE);
+            // printf("Output from PRUs: %s\n\n", readBuf);
+        }
+        else {
+            printf("Failed to open /dev/rpmsg31; hence can't read the file; ensure that pru1 has been probed\n");
+            return NULL;
+        }
         close(fd);
         return readBuf;
     }
