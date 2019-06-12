@@ -423,7 +423,7 @@ int send_msg(char *message, int n){
 char* get_msg(int n){
 
     int MAX_BUFFER_SIZE = 512;
-    char readBuf[MAX_BUFFER_SIZE];  
+    char* readBuf = new char[MAX_BUFFER_SIZE];  
     int result = 0;
     char device[] = "/dev/rpmsg_pru";
     if (n == 0){
@@ -437,6 +437,7 @@ char* get_msg(int n){
         int output = read(fd, readBuf, MAX_BUFFER_SIZE);
         printf("Output from PRUs: %s\n\n", readBuf);
         close(fd);
+        return readBuf;
     }
     else if (n == 1){
         char channel[3] = "31";
@@ -449,6 +450,7 @@ char* get_msg(int n){
         int output = read(fd, readBuf, MAX_BUFFER_SIZE);
         printf("Output from PRUs: %s\n\n", readBuf);
         close(fd);
+        return readBuf;
     }
-    return readBuf;
+    
 }
