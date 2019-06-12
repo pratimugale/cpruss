@@ -389,7 +389,7 @@ int send_msg(char *message, int n){
         strcat(path,channel);
         //printf("The string is %s\n", path);
         int fd = open(path, O_RDWR);
-        printf("fd = %i\n", fd);
+        //printf("fd = %i\n", fd);
         printf("Opened the device, writing '%s'\n", message);
         result = write(fd, message , 13);
         printf("Result: %i\n", result);
@@ -404,7 +404,7 @@ int send_msg(char *message, int n){
         strcat(path,channel);
         //printf("The string is %s\n", path);
         int fd = open(path, O_RDWR);
-        printf("fd = %i\n", fd);
+        //printf("fd = %i\n", fd);
         printf("Opened the device, writing '%s'\n", message);
         result = write(fd, message , 13);
         printf("Result: %i\n", result);
@@ -435,7 +435,7 @@ char* get_msg(int n){
         strcat(path,channel);
         int fd = open(path, O_RDWR);
         int output = read(fd, readBuf, MAX_BUFFER_SIZE);
-        printf("Output from PRUs: %s\n\n", readBuf);
+        //printf("Output from PRUs: %s\n\n", readBuf);
         close(fd);
         return readBuf;
     }
@@ -448,7 +448,7 @@ char* get_msg(int n){
         strcat(path,channel);
         int fd = open(path, O_RDWR);
         int output = read(fd, readBuf, MAX_BUFFER_SIZE);
-        printf("Output from PRUs: %s\n\n", readBuf);
+        // printf("Output from PRUs: %s\n\n", readBuf);
         close(fd);
         return readBuf;
     }

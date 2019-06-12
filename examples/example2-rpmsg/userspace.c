@@ -46,44 +46,24 @@ char readBuf[MAX_BUFFER_SIZE];
 
 int main(void)
 {
-        //int fd;
 	int i;
 	int result = 0;
-
-	/* Open the rpmsg_pru character device file */
-	//fd = open(DEVICE_NAME, O_RDWR);
-
 	/*
 	 * If the RPMsg channel doesn't exist yet the character device
 	 * won't either.
 	 * Make sure the PRU firmware is loaded and that the rpmsg_pru
 	 * module is inserted.
 	 */
-//	if (fd < 0) {
-//		printf("Failed to open %s\n", DEVICE_NAME);
-//		return -1;
-//	}
-
-	/* The RPMsg channel exists and the character device is opened */
-//	printf("Opened %s, sending %d messages\n\n", DEVICE_NAME, NUM_MESSAGES);
-
 	for (i = 0; i < NUM_MESSAGES; i++) {
-		/* Send 'hello world!' to the PRU through the RPMsg channel */
+		/* Send 'pratim ugale' to the PRU through the RPMsg channel */
 		result = send_msg("pratim ugale", 1);
+                // result(message, prun)
 		if (result > 0)
 			printf("Message %d: Sent to PRU\n", i);
 
-		/* Poll until we receive a message from the PRU and then print it */
 		char *message = get_msg(1);
 		printf("Message %d received from PRU:%s\n\n", i, message);
 	}
-
-	/* Received all the messages the example is complete */
-	printf("Received %d messages, closing\n", NUM_MESSAGES);
-
-	/* Close the rpmsg_pru character device file */
-//	close(fd);
-
 	return 0;
 }
 
