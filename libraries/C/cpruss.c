@@ -378,63 +378,77 @@ int send_msg(char *message, int n){
     //              < 0: Unsuccessful
     //int MAX_BUFFER_SIZE = 512;
     //char readBuf[MAX_BUFFER_SIZE];  
-    int fd;
+    char device[] = "/dev/rpmsg_pru";
     int result = 0;
-    char DEVICE_NAME[20] = "/dev/rpmsg_pru";
     if (n == 0){
-        char channel[3] = "30";
-        strcat(DEVICE_NAME, channel);
+        char channel[] = "30";
+        int length = (strlen(device)+strlen(channel)+1);
+        char path[length] ;
+        path[0] = '\0';   // ensures the memory is an empty string
+        strcat(path,device);
+        strcat(path,channel);
+        //printf("The string is %s\n", path);
+        int fd = open(path, O_RDWR);
+        printf("fd = %i\n", fd);
+        printf("Opened the device, writing '%s'\n", message);
+        result = write(fd, message , 13);
+        printf("Result: %i\n", result);
+        close(fd);
     }
     else if (n == 1){
         char channel[3] = "31";
-        strcat(DEVICE_NAME, channel);
+        int length = (strlen(device)+strlen(channel)+1);
+        char path[length] ;
+        path[0] = '\0';   // ensures the memory is an empty string
+        strcat(path,device);
+        strcat(path,channel);
+        //printf("The string is %s\n", path);
+        int fd = open(path, O_RDWR);
+        printf("fd = %i\n", fd);
+        printf("Opened the device, writing '%s'\n", message);
+        result = write(fd, message , 13);
+        printf("Result: %i\n", result);
+        close(fd);
     }
-    fd = open(DEVICE_NAME, O_RDWR);
     /*
      * If the RPMsg channel doesn't exist yet the character device
      * won't either.
      * Make sure the PRU firmware is loaded and that the rpmsg_pru
      * module is inserted.
      */
-    if (fd < 0) {
-    	printf("Failed to open %s\n", DEVICE_NAME);
-    	return -1;
-    }
     /* The RPMsg channel exists and the character device is opened */
-    printf("Opened %s\n", DEVICE_NAME);
-
-    result = write(fd, message, 13);
-
     return result;
-
 }
 
 char* get_msg(int n){
 
     int MAX_BUFFER_SIZE = 512;
     char readBuf[MAX_BUFFER_SIZE];  
-    int fd;
     int result = 0;
-    char DEVICE_NAME[20] = "/dev/rpmsg_pru";
+    char device[] = "/dev/rpmsg_pru";
     if (n == 0){
-        char channel[3] = "30";
-        strcat(DEVICE_NAME, channel);
+        char channel[] = "30";
+        int length = (strlen(device)+strlen(channel)+1);
+        char path[length] ;
+        path[0] = '\0';   // ensures the memory is an empty string
+        strcat(path,device);
+        strcat(path,channel);
+        int fd = open(path, O_RDWR);
+        int output = read(fd, readBuf, MAX_BUFFER_SIZE);
+        printf("Output from PRUs: %s\n\n", readBuf);
+        close(fd);
     }
     else if (n == 1){
         char channel[3] = "31";
-        strcat(DEVICE_NAME, channel);
+        int length = (strlen(device)+strlen(channel)+1);
+        char path[length] ;
+        path[0] = '\0';   // ensures the memory is an empty string
+        strcat(path,device);
+        strcat(path,channel);
+        int fd = open(path, O_RDWR);
+        int output = read(fd, readBuf, MAX_BUFFER_SIZE);
+        printf("Output from PRUs: %s\n\n", readBuf);
+        close(fd);
     }
-    fd = open(DEVICE_NAME, O_RDWR);
-    if (fd < 0) {
-    	printf("Failed to open %s\n", DEVICE_NAME);
-    	return "-1";
-    }
-    /* The RPMsg channel exists and the character device is opened */
-    printf("Opened %s\n", DEVICE_NAME);
-
-    result = read(fd, readBuf, MAX_BUFFER_SIZE);
-
     return readBuf;
-
-    
 }
