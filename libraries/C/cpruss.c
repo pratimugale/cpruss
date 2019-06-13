@@ -7,66 +7,11 @@
 
 #include "cpruss.h"
 
-//Function prototypes
-//The n in the parameter stands for which PRU you currently want to use
-//n = 1: PRU 1: /sys/devices/platform/ocp/4a326004.pruss-soc-bus/4a300000.pruss/4a334000.pru/remoteproc/remoteproc1/state
-//n = 2: PRU 2: /sys/devices/platform/ocp/4a326004.pruss-soc-bus/4a300000.pruss/4a338000.pru/remoteproc/remoteproc2/state
-
-/* -------------------CLEANUP LATER--------
-void start(int n);
-void stop(int n);
-void restart(int n);
-char* state(int n);
-
-Global Variables
-char command[150];
-int prun;
-char status[8];
-
-*/
-
-// main() function is for temporary testing 
-/*int main(void){
-    printf("Started executing!\n");
-    //restart();
-    prun = 1;
-    restart(prun);
-
-    state(2);
-    printf("Completed execution!\n");
-
-    return 0;
-}*/
-
 char command[150];
 int  prun;
 char status[8];
 
 void start(int n){
-    //Procedure to Start the PRU execution(on whichever firmware is currently loaded)
-    //PRU needs to be stopped before using this function again.
-    //For all practical purposes, use restart() instead of start
-
-    //TODO: check if PRU state is already running
-
-    /*
-    FILE *file = fopen("/sys/devices/platform/ocp/4a326004.pruss-soc-bus/4a300000.pruss/4a334000.pru/remoteproc/remoteproc1/state", "r"); 
-    if (file != NULL){
-        char status[8];
-        fgets(status, sizeof status, file);
-        if (status[0] != "r"){
-            strcpy(command, "echo start | sudo tee -a /sys/devices/platform/ocp/4a326004.pruss-soc-bus/4a300000.pruss/4a334000.pru/remoteproc/remoteproc1/state");
-            system(command);
-            printf("----------------------->%s",status); 
-            printf("--------------------------");
-            printf("hi");
-
-        }
-        else {
-            //Delete following line
-            printf("PRU was running.");
-        }
-    }*/
     if(n == 1){
         // strcmp() returns 0 if both strings DO match!
         if (strcmp(state(1), "running")){
@@ -119,7 +64,6 @@ void stop(int n){
 
 void restart(int n){
     //Procedure to stop the current execution and start again.(executes same firmware again)
-    //For all practical purposes, restart() is better to use than start()
     if (n == 1 || n == 2){ 
         stop(n);
         start(n);
@@ -131,17 +75,12 @@ void restart(int n){
 
 char* state(int n){
     //Returns (as a string), the current state of the PRU
-
-    //state = "abcdefg\0";
-    //return strdup(&state[0]);
-
     if (n == 1){
         FILE *file = fopen("/sys/devices/platform/ocp/4a326004.pruss-soc-bus/4a300000.pruss/4a334000.pru/remoteproc/remoteproc1/state", "r"); 
         if (file != NULL){
             fgets(status, sizeof status, file);
             fclose(file);
             return status;
-            //printf("Status of PRU 1: %s", status);
         }
     }
     else if (n == 2){
@@ -150,7 +89,6 @@ char* state(int n){
             fgets(status, sizeof status, file);
             fclose(file);
             return status;
-            //printf("Status of PRU 2: %s", status);
         }
         else{
              printf("Invalid PRUn input in function state()\n");
@@ -225,9 +163,6 @@ int rmmod(int n=0){
 }
 
 void make(char *path){
-    //Procedure that runs the "make" command on the Makefile whose location is specified in the argument 
-    //Always give the absolute path to be sure
-    //*******************
     //DO NOT PASS THE ARGUMENT AS A STRING CONSTANT ELSE A WARNING WILL BE THROWN
     //INSTEAD DO THIS(in your calling program):
     //char path[7] = "~/path";
@@ -269,7 +204,6 @@ void load_firmware(char *path, int prun){
 
 void modprobe_pru_rproc(){
     //Procedure to add the "pru_rproc" module to the Linux Kernel
-
     char rproc[10] = "pru_rproc";
     if (check_module(rproc) == 1){
         strcpy(command, "sudo modprobe pru_rproc");
