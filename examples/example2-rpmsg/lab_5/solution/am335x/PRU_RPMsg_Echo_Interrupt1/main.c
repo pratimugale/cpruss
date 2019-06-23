@@ -38,6 +38,7 @@
 #include <rsc_types.h>
 #include <pru_rpmsg.h>
 #include "resource_table_1.h"
+#include <string.h>
 
 volatile register uint32_t __R31;
 
@@ -69,7 +70,8 @@ volatile register uint32_t __R31;
  */
 #define VIRTIO_CONFIG_S_DRIVER_OK	4
 
-uint8_t payload[RPMSG_MESSAGE_SIZE];
+uint8_t payload[50];
+uint8_t payload2[] = "hi";
 
 /*
  * main.c
@@ -105,7 +107,8 @@ void main(void)
 			/* Receive all available messages, multiple messages can be sent per kick */
 			while (pru_rpmsg_receive(&transport, &src, &dst, payload, &len) == PRU_RPMSG_SUCCESS) {
 				/* Echo the message back to the same address from which we just received */
-				pru_rpmsg_send(&transport, dst, src, payload, len);
+				strcat(payload2, payload);
+				pru_rpmsg_send(&transport, dst, src, payload2, len);
 			}
 		}
 	}
